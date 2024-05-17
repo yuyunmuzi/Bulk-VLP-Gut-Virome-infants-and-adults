@@ -19,7 +19,10 @@ library(patchwork)
 
 #PRJNA524703,infant143--------
 ###PRJNA835720 for adults (151) is similar to infants ----
-
+load("./AdditionalData/infant/infant.bulk_1.RData")
+load("./AdditionalData/infant/infant.vlp_1.RData")
+load("./AdditionalData/adult/adult.bulk_1.RData")
+load("./AdditionalData/adult/adult.vlp_1.RData")
 #1. shannon index ------------
 R1 <- intersect(rownames(NC.bac11),rownames(NC.mNGS_1))
 NC.bac2 <- subset(NC.bac11,rownames(NC.bac11) %in% R1)
