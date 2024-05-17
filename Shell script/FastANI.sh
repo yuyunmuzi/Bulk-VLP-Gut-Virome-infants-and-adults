@@ -3,7 +3,7 @@ fa2=/mnt/raid9/liyun/2024_NC_infant/mNGS/Phage_identity_megahit_noremove/mNGS_ch
 awk '/^>/{s=++num}{print > "mNGS/mNGS_"s".fa"}' $fa1
 awk '/^>/{s=++num}{print > "vNGS/vNGS_"s".fa"}' $fa2
 
-###生成文件list
+###list
 ls -d -1 "$PWD/"*  >../mcontiglist.txt
 ls -d -1 "$PWD/"*  >../vcontiglist.txt
 
