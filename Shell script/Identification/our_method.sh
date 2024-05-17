@@ -6,7 +6,6 @@ mkdir  -p 02_virfinder_result 04_Positive
 if [ ! -s "04_Positive/${infile}.virfiner.genome" ];then
     mkdir -p 03_VirFinder
     /user/bin/Rscript  /mnt/raid5/sunchuqing/Buffalo_gut/VirFinder.R $seq 03_VirFinder/${infile}.csv
-    #VirFinder输出文件
     awk 'BEGIN {FS=","} $3>0.6 {print $1}' 03_VirFinder/${infile}.csv|awk 'BEGIN {FS=" "} {print $1}' > 04_Positive/${infile}.virfiner.genome
 fi
 
