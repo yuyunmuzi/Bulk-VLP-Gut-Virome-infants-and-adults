@@ -7,7 +7,6 @@ library(tidyr)
 
 NC.vlp<-read.delim(file="F:/2024NC_infant/NC.all.rpkm75.txt",header =FALSE, sep = "\t")
 NC.mNGS<-read.delim(file="F:/2024NC_infant/mNGS.infant.coverm.txt",header =FALSE, sep = "\t")
-NC.mNGS2<-read.delim(file="F:/2024NC_infant/01_mNGS.rpkm75.infant.txt",header =FALSE, sep = "\t")
 NC.bac <- read.delim(file="F:/2024NC_infant/merged_abundance_species.txt",header =TRUE, sep = "\t")
 
 ####PRJNA524703 vlp group bac----
