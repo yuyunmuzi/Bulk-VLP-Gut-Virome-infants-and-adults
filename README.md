@@ -1,4 +1,4 @@
-# envs
+# Requirements
 The tools needed to used in shell scripts.
 
 # Shell scripts
