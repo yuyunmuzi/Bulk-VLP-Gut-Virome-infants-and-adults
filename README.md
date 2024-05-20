@@ -13,7 +13,7 @@ For our method (Hereafter is our_method), Subsequently, we removed the bacterial
 
 # Viral identification and acquisition of non-redundant vOTUs
 The method for viral gene identification is consistent with Zeng S, et al. After assembly, all contigs > 3kb in length in each sample were submitted to VirSorter v2.2.3, VirFinder v1.19 and VIBRANT v1.2.1 for identification of viral populations (The parameters is the same as the Methods in Zeng S, et al.7). Thereafter, the viral populations were filtered by CheckV v1.0.1, and further dereplication by CD-HIT v4.6.8 (parameters: -c 0.95 -M 16000 -aS 0.85 -d 0) to obtain non-redundant species-level viral operational taxonomic units (vOTUs) based on the two methods. 
-
+#
 For our_method, we use another method for viral gene identification is referenced in the GPD database. After assembly, all contigs > 5kb in length in each sample were submitted to VirSorter v2.0 (--min-score 0.7) and VirFinder v1.1 (default parameters) for identification of potential viral operational taxonomic units (vOTUs). We consider a contig as a virus if it satisfies both classification criteria. Next, we merged all the vOTUs from all samples in mNGS and vNGS separately, and then the merged dataset was dereplicated using CD-HIT (v4.8.1, parameters: -c 0.95 -M 16000 -aS 0.8 -d 0) to establish two non-redundant viral genome catalogs based on the two methods. 
 
 # R scripts
