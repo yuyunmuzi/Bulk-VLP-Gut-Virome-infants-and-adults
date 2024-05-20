@@ -5,7 +5,7 @@ The tools needed to used in shell scripts.
 Shell scripts used in genome assembly, viral recognition and other analysis.
 
 # Rawdata processing
-Raw next generation sequencing of viral reads were processed with Trimmomatic v0.38 (with parameter LEADING:3 TRAILING:3 SLIDINGWINDOW:15:30 MINLEN:50) to remove adaptors and trim low-quality bases; reads of 50 bp or less after trimming were discarded. Putative human reads were identified from the trimmed reads by aligning the latter to the human reference genome (hg38; GCA_000001405.15) using Bowtie2 (v2.4.2, --end-to-end) with default parameters and removed from further analysis.
+Raw next generation sequencing of viral reads were processed with **Trimmomatic v0.38** (with parameter LEADING:3 TRAILING:3 SLIDINGWINDOW:15:30 MINLEN:50) to remove adaptors and trim low-quality bases; reads of 50 bp or less after trimming were discarded. Putative human reads were identified from the trimmed reads by aligning the latter to the human reference genome (hg38; GCA_000001405.15) using Bowtie2 (v2.4.2, --end-to-end) with default parameters and removed from further analysis.
 
 # Assembly
 There is two method used in our study, The main method in manuscript is consistent with Zeng S, et al. The quality-controlled reads of bulk and VLP were assembled with MegaHIT v1.1.3 (default parameters except option “-min-contig-len 1000”).
