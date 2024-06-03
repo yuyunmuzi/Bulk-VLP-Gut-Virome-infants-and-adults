@@ -1,0 +1,14 @@
+name: tools
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - checkv=1.0.1
+  - cd-hit=4.6.8
+  - diamond=2.1.8
+  - trimmomatic=0.38
+  - bowtie2=2.4.2
+  - megahit=1.1.3
+  - blast=2.13.0
+  - bwa=0.7.17
+  - coverm=0.6.1
