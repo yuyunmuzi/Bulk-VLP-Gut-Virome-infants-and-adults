@@ -1,3 +1,4 @@
+name: coverm
 channels:
   - conda-forge
   - bioconda
