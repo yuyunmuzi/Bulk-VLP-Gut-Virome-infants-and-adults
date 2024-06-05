@@ -1,8 +1,7 @@
 # envs
 The tools needed to used in shell scripts.
-#
-#tools for processing reads and assembly
 ```
+#tools for processing reads and assembly
 conda env create -f requirements.yml
 conda activate tools
 ```
