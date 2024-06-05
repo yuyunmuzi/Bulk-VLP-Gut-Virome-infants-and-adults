@@ -1,5 +1,7 @@
 # envs
 The tools needed to used in shell scripts.
+#
+conda env create -f requirements.yml
 
 # Shell scripts
 Shell scripts used in genome assembly, viral recognition and other analysis.
