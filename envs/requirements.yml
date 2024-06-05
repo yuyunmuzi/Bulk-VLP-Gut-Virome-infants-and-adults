@@ -4,7 +4,7 @@ channels:
   - bioconda
 dependencies:
   - checkv=1.0.1
-  - cd-hit
+  - cd-hit=4.6.8
   - diamond=2.1.8
   - trimmomatic=0.38
   - bowtie2=2.4.2
