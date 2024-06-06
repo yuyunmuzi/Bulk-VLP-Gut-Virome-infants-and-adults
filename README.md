@@ -7,11 +7,11 @@ conda activate tools
 ```
 ```
 #identification
-conda env create -f VirFinder.yml
+mamba env create -f VirFinder.yml
 conda activate VF
-conda env create -f vibrant.yml
+mamba env create -f vibrant.yml
 conda activate vibrant
-conda env create -f virsorter2.yml
+mamba env create -f virsorter2.yml
 conda activate vs2
 ```
 # Shell scripts
