@@ -2,7 +2,7 @@
 The tools needed to used in shell scripts.
 ```
 #tools for processing reads and assembly
-conda env create -f requirements.yml
+mamba env create -f requirements.yml
 conda activate tools
 ```
 ```
@@ -13,11 +13,6 @@ conda env create -f vibrant.yml
 conda activate vibrant
 conda env create -f virsorter2.yml
 conda activate vs2
-```
-```
-#abundance calculation
-conda env create -f coverm.yml
-conda activate coverm
 ```
 # Shell scripts
 Shell scripts used in genome assembly, viral recognition and other analysis.
