@@ -416,7 +416,6 @@ my_pair.table=function(feat_list){
     return(xtest)
   }
   
-  #add
   data_add=list()
   for (i in 1:length(feat_list)) {
     data_add[[i]]=my_add(b[[i]],feat_list[[i]])
@@ -478,7 +477,6 @@ caries_marker_filter_stable <- caries_marker_filter %>%
   semi_join(LDA_sign_changes, by = 'scientific_name')
 unique(caries_marker_filter_stable$scientific_name) #139
 
-#write.csv(caries_marker_filter_stable,"D:/下载/metadata/yun/our_lefse2.csv")
 
 negative_names <- caries_marker_filter_stable %>%
   filter(LDA_sign == "mNGS") %>%
