@@ -382,3 +382,123 @@ NC.vlp_1a2 <- NC.vlp_1a1
     ylab("The consistent of genus of bulk and VLP")
  p1+p2 
 
+##LEfse----
+colnames(our.mNGS_1a2) <- paste(colnames(our.mNGS_1a2), "_mNGS", sep = "")
+colnames(our.vlp_1a1) <- paste(colnames(our.vlp_1a1), "_vlp", sep = "")
+
+our.mNGS_1a2 <- our.mNGS_1a2[!rownames(our.mNGS_1a2) %in% E_genus.list$V1, ]#433 150
+our.vlp_1a1 <- our.vlp_1a1[!rownames(our.vlp_1a1) %in% E_genus.list$V1, ]#459  150
+
+our.mNGS_1a2 <- data.frame(our.mNGS_1a2[,apply(our.mNGS_1a2,2,max)>0]) #190 150
+our.vlp_1a1 <- data.frame(our.vlp_1a1[,apply(our.vlp_1a1,2,max)>0])  #183  150
+feat_list <- list()
+feat_list[["our.mNGS_1a2"]] <- as.data.frame(t(our.mNGS_1a2))  #150  190
+feat_list[["our.vlp_1a1"]] <- as.data.frame(t(our.vlp_1a1))   #150  183
+my_pair.table=function(feat_list){
+  library(tidyverse)
+  
+  
+  feat_name=lapply(feat_list,function(data){colnames(data)})
+  feat_ID=feat_name%>%unlist()%>%as.vector()%>%unique()
+  b=lapply(feat_list, function(data){
+    add=setdiff(feat_ID,colnames(data))
+  })
+  
+  my_add=function(b,feat){
+    if(length(b)!=0){
+      b=as.character(b)
+      x_add=data.frame(matrix(0,dim(feat)[1],length(b)))
+      colnames(x_add)=b
+      xtest=cbind(feat,x_add)
+    }else{
+      xtest=feat
+    }
+    return(xtest)
+  }
+  
+  #add
+  data_add=list()
+  for (i in 1:length(feat_list)) {
+    data_add[[i]]=my_add(b[[i]],feat_list[[i]])
+  }
+  names(data_add)=names(feat_list)
+  
+  feat_seq=sort(feat_ID)
+  data_add=lapply(data_add, function(data){new_data=data[,c(feat_seq)]})
+  
+  return(data_add)
+}
+feat_list <- my_pair.table(feat_list) #150  190/150  183
+
+our <- rbind(feat_list$our.mNGS_1a2,feat_list$our.vlp_1a1)
+
+#
+feat_list <- list()
+feat_list[["our"]] <- as.data.frame(our)#300 261
+rownames_meta <- rownames(our)
+group_meta <- ifelse(grepl("_mNGS$", rownames_meta), "Control", "Case")
+meta_our <- data.frame(sample_id = rownames_meta, Group = group_meta,Bodysite="oral",disease_stage=NA,country="us",sex=NA,host_age=NA,BMI=NA)
+meta_our <- column_to_rownames(meta_our,var = "sample_id")
+
+meta_list <- list()
+meta_list[["our"]] <- meta_our
+
+source("./AdditionalData/siamcat_models_adj.R")
+# library(pkgbuild)
+# library(profvis)
+# library(devtools)
+# library(MMUPHin)
+# devtools::install_github("rstudio/r2d3")
+caries_mymarker.adj <- my_marker_adj(feat_list,meta_list,NULL,NULL,T,T,T,
+                                     is_plot=F,lda_cutoff=3,nproj_cutoff=1,level="genus",change_name=F)
+
+
+caries_marker <- caries_mymarker.adj$marker_data
+caries_marker$scientific_name <- gsub("g__","", caries_marker$scientific_name)
+caries_marker$LDA <- as.numeric(caries_marker$LDA)
+caries_marker$p_value <- as.numeric(caries_marker$p_value)
+summary(caries_marker)
+sum(caries_marker$class == "adjust")
+sum(caries_marker$p_value <= 0.05)
+
+caries_marker_filter <- caries_marker %>%
+  filter(abs(LDA) >= 3,p_value <= 0.05) %>% 
+  filter(class == "adjust")
+unique(caries_marker_filter$scientific_name) #146个
+
+caries_marker_filter <- caries_marker_filter %>%
+  mutate(LDA_sign = ifelse(LDA > 0, 'vNGS', 'mNGS'))
+
+LDA_sign_changes <- caries_marker_filter %>%
+  group_by(scientific_name) %>%
+  summarise(Changes = n_distinct(LDA_sign)) %>%
+  filter(Changes == 1) 
+
+caries_marker_filter_stable <- caries_marker_filter %>%
+  semi_join(LDA_sign_changes, by = 'scientific_name')
+unique(caries_marker_filter_stable$scientific_name) #139
+
+#write.csv(caries_marker_filter_stable,"D:/下载/metadata/yun/our_lefse2.csv")
+
+negative_names <- caries_marker_filter_stable %>%
+  filter(LDA_sign == "mNGS") %>%
+  arrange(LDA) %>%
+  pull(scientific_name)
+
+positive_names <- caries_marker_filter_stable %>%
+  filter(LDA_sign == "vNGS") %>%
+  arrange(LDA) %>%
+  pull(scientific_name)
+
+ordered_names <- c(negative_names, positive_names)
+
+caries_marker_filter_stable$scientific_name <- 
+  factor(caries_marker_filter_stable$scientific_name, levels = unique(ordered_names))
+ggplot(caries_marker_filter_stable, aes(x = LDA, y = scientific_name,fill= LDA_sign)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = c("#C45C69","#4D779B"),name = "LDA_sign")+
+  scale_x_continuous(breaks = c(seq(-4, -2, by = 1), seq(2, 4, by = 1))) +
+  #scale_x_continuous(breaks = c(seq(min(caries_marker_filter_stable$LDA), -2, by = 1), seq(2, max(caries_marker_filter_stable$LDA), by = 1))) +
+  theme_classic() +
+  labs(x = "LDA", y = "Scientific Name") +
+  theme(axis.text.y = element_text(angle = 45, hjust = 1))
