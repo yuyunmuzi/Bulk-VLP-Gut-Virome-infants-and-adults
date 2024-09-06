@@ -304,5 +304,81 @@ NC.pp1 <- ggplot(bary,aes(group,bray_cruit,fill=group)) +
                      method = "wilcox.test",paired = TRUE)+
   facet_grid(~ factor(month, levels = c("Month 0","Month 1","Month 4")))
 
-
+##co-identity---
+load("./AdditionalData/infant/infant.bulk_1a1.RData")
+load("./AdditionalData/infant/infant.vlp_1a1.RData")
+load("./AdditionalData/adult/adult.bulk_1a1.RData")
+load("./AdditionalData/adult/adult.vlp_1a1.RData")
+NC.vlp_1a2 <- NC.vlp_1a1 
+  NC.vlp_1a2[NC.vlp_1a2>0]=1
+  NC.mNGS_1a2 <- NC.mNGS_1a1 
+  NC.mNGS_1a2[NC.mNGS_1a2>0]=1
+  R <- intersect(colnames(NC.vlp_1a2),colnames(NC.mNGS_1a2))
+  aa <- m_prevalence
+  aa$contribution <- numeric(nrow(m_prevalence))
+  for(i in 1:length(m_prevalence$Genus)){
+    a=0
+    if (m_prevalence$Genus[i] %in% rownames(NC.vlp_1a2)) {
+      for(j in R){
+        if(NC.mNGS_1a2[rownames(NC.mNGS_1a2) == m_prevalence$Genus[i], j]==1 && NC.vlp_1a2[rownames(NC.vlp_1a2) == m_prevalence$Genus[i], j]==1 ){
+          a=a+1
+        }
+      }
+      m=NC.mNGS_1a2[rownames(NC.mNGS_1a2) == m_prevalence$Genus[i], ]
+      m <- names(m)[m > 0]
+      v=NC.vlp_1a2[rownames(NC.vlp_1a2) == m_prevalence$Genus[i], ]
+      v <- names(v)[v > 0]
+      l=length(unique(m,v))
+    }
+      aa$contribution[i]=round(a/l,3)
+  }
+  
+  library(ggplot2)
+  library(dplyr)
+  
+  # The dataset is provided in the gapminder library
+  #library(gapminder)
+  #data <- gapminder %>% filter(year=="2007") %>% dplyr::select(-year)
+  
+  aa$group="mNGS"
+  bb <- left_join(v_prevalence,aa,by="Genus")
+  bb <- na.omit(bb)
+  #bb <- bb[which(bb$contribution>0),]
+  bb <- bb[c(1,2,4)]
+  bb$group="vNGS"
+  colnames(bb)[1]="prevalence"
+  #aa1 <- aa[which(aa$contribution>0),]
+  A <- rbind(aa,bb)
+  
+  A %>%
+    arrange(desc(prevalence)) %>%
+   # mutate(country = factor(country, country)) %>%
+    ggplot(aes(x=prevalence, y=reorder(Genus,prevalence), size = prevalence,color=contribution)) +
+    geom_point(alpha=0.5) +
+    scale_color_gradient(low = "lightblue", high = "#142D45")+
+    facet_wrap(~ group,scales = "free_y",ncol = 2)+ # scales = "free_y", 
+    #scale_size(range = c(.1, 20), name="Prevalence")+
+    theme_classic()+
+    ylab("Genus (present in both mNGS and vNGS)")+
+    xlab("Prevalence") +
+    scale_x_continuous(limits = c(0, 1),labels = percent_format()) 
+  cor.test(aa$prevalence,aa$contribution, alternative = "two.sided", method = "spearman",conf.level = 0.95)
+  p1 <- aa %>%  ggplot(aes(x=prevalence,y=contribution))+
+   stat_smooth(method="loess",formula=y~x,color="#CB7368")+
+   geom_point(color="#CB7368")+
+   theme_bw()+ylim(c(0,1))+
+    annotate('text', label = 'rho = 0.44\np-value = 1.335e-15-05 ',
+             x = 0.5, y =0.9, size = 4,hjust = 0)+
+    xlab("Prevalence of genus")+
+    ylab("The consistent of genus of bulk and VLP")
+  cor.test(bb$prevalence,bb$contribution, alternative = "two.sided", method = "spearman",conf.level = 0.95)
+ p2 <-  bb %>%  ggplot(aes(x=prevalence,y=contribution))+
+    stat_smooth(method="loess",formula=y~x,color="#75AADB")+
+    geom_point(color="#75AADB")+
+    theme_bw()+ylim(c(0,1))+
+    annotate('text', label = 'rho = 0.53\np-value < 2.2e-16 ',
+             x = 0.4, y =0.9, size = 4,hjust = 0)+
+    xlab("Prevalence of genus")+
+    ylab("The consistent of genus of bulk and VLP")
+ p1+p2 
 
